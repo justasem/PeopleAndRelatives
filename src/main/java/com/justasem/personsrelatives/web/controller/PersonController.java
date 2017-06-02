@@ -1,81 +1,57 @@
 package com.justasem.personsrelatives.web.controller;
 
 import com.justasem.personsrelatives.model.Person;
+import com.justasem.personsrelatives.service.PersonNotFoundException;
 import com.justasem.personsrelatives.service.PersonService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.bind.annotation.*;
 
+import javax.inject.Inject;
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Map;
 
 @Controller
+@SessionAttributes("person")
 public class PersonController {
 
-   @Autowired
+    @Inject
     private PersonService personService;
 
-    @SuppressWarnings("unchecked")
-    @RequestMapping("/persons")
-    public String listPersons (Model model) {
-       List<Person> persons = personService.findAll();
+    @RequestMapping("/")
+    public String listPersons(Model model) {
+        List<Person> persons = personService.getAllPersons();
+        model.addAttribute("persons", persons);
+        return "index";
+    }
 
-       model.addAttribute("persons", persons);
-       return "person/index";
-   }
-
-   @RequestMapping("/persons/{personId}")
-    public String person(@PathVariable int personId, Model model) {
-        Person person = null;
-
+    //TODO Sort relatives
+    @RequestMapping("person/{id}")
+    public String personDetail(@PathVariable("id") Long id, Model model) throws PersonNotFoundException {
+        Person person = personService.findById(id);
+        List<Person> relatives = personService.getAllRelatives(person);
+        Map<Person, String> relativesMapped = personService.getRelativesMappedWithType(person, relatives);
         model.addAttribute("person", person);
-        return "person/details";
+        model.addAttribute("relativesMapped", relativesMapped);
+        return "detail";
+    }
 
-   }
+    @RequestMapping("person/add")
+    public String addPerson(Model model) {
+        model.addAttribute("person", new Person());
+        return "form";
+    }
 
-   @RequestMapping("persons/add")
-    public String formNewPerson(Model model) {
-        if(!model.containsAttribute("person")) {
-            model.addAttribute("person", new Person());
-        }
+    @RequestMapping("person/edit/{id}")
+    public String editPerson(@PathVariable("id") Long id, Model model) {
+        model.addAttribute("person", personService.findById(id));
+        return "form";
+    }
 
-        return "person/form";
-   }
-
-   @RequestMapping("persons/{personId}/edit")
-    public String formEditPerson(@PathVariable int personId, Model model) {
-        if(!model.containsAttribute("person")) {
-            model.addAttribute("person", personService.findById(personId));
-        }
-        return "person/form";
-   }
-
-   @RequestMapping(value = "/persons/{personId}", method = RequestMethod.POST)
-    public String updatePerson(@Valid Person person, BindingResult result, RedirectAttributes redirectAttributes) {
-        if(result.hasErrors()) {
-            return String.format("redirect:/persons/%s/edit", person.getId());
-        }
-        personService.save(person);
-
-        return "redirect:/persons";
-   }
-
-   @RequestMapping(value = "/persons", method = RequestMethod.POST)
-    public String addPerson(@Valid Person person, BindingResult result, RedirectAttributes redirectAttributes) {
-        if(result.hasErrors()) {
-            return "redirect:/persons/add";
-        }
-
-        personService.save(person);
-
-        return "redirect:/persons";
-   }
-
-
-
+    @RequestMapping(value = "person", method = RequestMethod.POST)
+    public String savePerson(@ModelAttribute("person") @Valid Person person) {
+        personService.savePerson(person);
+        return "redirect:/";
+    }
 }
