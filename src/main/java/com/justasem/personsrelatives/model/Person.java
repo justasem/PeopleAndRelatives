@@ -2,10 +2,7 @@ package com.justasem.personsrelatives.model;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.persistence.Id;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Size;
@@ -18,17 +15,28 @@ public class Person {
     @GeneratedValue(strategy= GenerationType.AUTO)
     private Long id;
 
-    @NotNull
-    @Size(min=2, max=50)
+    @NotNull(message = "Įveskite asmens vardą")
+    @Size(message = "Netinkamas vardo formatas(Leidžiamas nuo 2 iki 50 simbolių ilgis)", min=2, max=50)
     private String firstName;
 
-    @NotNull
-    @Size(min=2, max=50)
+    @NotNull(message = "Įveskite asmens pavardę")
+    @Size(message = "Netinkamas pavardės formatas(Leidžiamas nuo 2 iki 50 simbolių ilgis)", min=2, max=50)
     private String lastName;
 
-    @NotNull @Past
+    @NotNull(message = "Įveskite asmens gimimo datą")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate birthDate;
+
+    @Transient
+    private String relativeType;
+
+    public String getRelativeType() {
+        return relativeType;
+    }
+
+    public void setRelativeType(String relativeType) {
+        this.relativeType = relativeType;
+    }
 
     public Person() {}
     public Person(Long id, String firstName, String lastName, LocalDate birthDate) {

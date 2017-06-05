@@ -11,11 +11,14 @@
 
 </head>
 <body>
+        <div>
+                    <a href="/person/add">PRIDĖTI ASMENĮ</a>
+        </div>
     <div>
         <table>
             <tr>
                 <th>Vardas</th>
-                <th>Pavarde</th>
+                <th>Pavardė</th>
                 <th>Gimimo data</th>
             </tr>
             <c:forEach items="${persons}" var="person" varStatus="status">
@@ -26,8 +29,8 @@
                 </tr>
             </c:forEach>
         </table>
-        <a href="/person/add">Pridėti asmenį</a>
     </div>
 </body>
+
 
 </html>

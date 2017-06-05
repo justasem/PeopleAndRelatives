@@ -5,6 +5,7 @@ import com.justasem.personsrelatives.service.PersonNotFoundException;
 import com.justasem.personsrelatives.service.PersonService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
@@ -31,9 +32,9 @@ public class PersonController {
     public String personDetail(@PathVariable("id") Long id, Model model) throws PersonNotFoundException {
         Person person = personService.findById(id);
         List<Person> relatives = personService.getAllRelatives(person);
-        Map<Person, String> relativesMapped = personService.getRelativesMappedWithType(person, relatives);
+        List<Person> relativesWithType = personService.getRelativesWithType(person, relatives);
         model.addAttribute("person", person);
-        model.addAttribute("relativesMapped", relativesMapped);
+        model.addAttribute("relativesWithType", relativesWithType);
         return "detail";
     }
 
@@ -50,8 +51,12 @@ public class PersonController {
     }
 
     @RequestMapping(value = "person", method = RequestMethod.POST)
-    public String savePerson(@ModelAttribute("person") @Valid Person person) {
-        personService.savePerson(person);
+    public String savePerson(@ModelAttribute("person") @Valid Person person, BindingResult result) {
+        if(result.hasErrors()) {
+            return "form";
+        } else {
+            personService.savePerson(person);
+        }
         return "redirect:/";
     }
 }

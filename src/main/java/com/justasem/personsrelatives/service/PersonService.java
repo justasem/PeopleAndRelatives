@@ -44,7 +44,6 @@ public class PersonService {
 
     public String getRelativeType(Person person, Person relative) {
         int years = getYearsBetweenBirthDates(person.getBirthDate(), relative.getBirthDate());
-        String relativeType = "";
 
         if (hasSameLastName(person, relative)) {
             if(years >= 0 && years <= FIFTEEN) {
@@ -57,7 +56,7 @@ public class PersonService {
                 return getRelativeTypeIfHighAgeDifference(person, relative);
             }
         }
-        return relativeType;
+        return "nežinomas giminystės ryšys";
     }
 
     public int getYearsBetweenBirthDates(LocalDate birthDate1, LocalDate birthDate2) {
@@ -112,32 +111,40 @@ public class PersonService {
         if(relativeIsOlder(person, relative)){
             if(isMan(relative.getLastName())) {
                 return "senelis";
-            }else {
+            }
+            if(isWoman(relative.getLastName())){
                 return "senelė";
             }
-        }else {
+        }
+        else {
             if(isMan(relative.getLastName())) {
                 return "anūkas";
-            }else {
+            }
+            if (isWoman(relative.getLastName())) {
                 return "anūkė";
             }
         }
+        return "nežinomas giminystės ryšys";
     }
 
     private String getRelativeTypeIfMediumAgeDifference(Person person, Person relative) {
         if(relativeIsOlder(person, relative)){
             if(isMan(relative.getLastName())) {
                 return "tėvas";
-            }else {
+            }
+            if(isWoman(relative.getLastName())){
                 return "motina";
             }
-        }else {
+        }
+        else {
             if(isMan(relative.getLastName())) {
                 return "sūnus";
-            }else {
+            }
+            if (isWoman(relative.getLastName())) {
                 return "dukra";
             }
         }
+        return "nežinomas giminystės ryšys";
     }
 
     private String getRelativeTypeIfLowAgeDifference(Person person, Person relative) {
@@ -147,13 +154,15 @@ public class PersonService {
             }else {
                 return "brolis";
             }
-        }else {
-            if(isMarriedWoman(relative)){
+        }
+        if(isWoman(relative.getLastName())) {
+            if (isMarriedWoman(relative)) {
                 return "žmona";
-            }else {
+            } else {
                 return "sesuo";
             }
         }
+        return "nežinomas giminystės ryšys";
     }
 
     private boolean relativeIsOlder(Person person, Person relative) {
@@ -175,15 +184,13 @@ public class PersonService {
         return relatives;
     }
 
-    public Map<Person, String> getRelativesMappedWithType(Person person, List<Person> relatives) {
-        Map<Person, String> relativesMapped = new TreeMap<>((person1, person2) -> {
-            Period period = Period.between(person2.getBirthDate(), person1.getBirthDate());
-            return period.getYears();
-        });
-        for (Person relative:relatives) {
-            relativesMapped.put(relative, getRelativeType(person, relative));
-        }
-        return relativesMapped;
-    }
+    public List<Person> getRelativesWithType(Person person, List<Person> relatives) {
+        List<Person> relativesWithType = new ArrayList<>();
 
+        for (Person relative:relatives) {
+            relative.setRelativeType(getRelativeType(person, relative));
+            relativesWithType.add(relative);
+        }
+        return relativesWithType;
+    }
 }

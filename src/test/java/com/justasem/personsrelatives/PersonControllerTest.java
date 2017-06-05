@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -15,10 +16,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import javax.annotation.Resource;
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.hamcrest.Matchers.*;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
@@ -108,20 +106,21 @@ public class PersonControllerTest {
     @Test
     public void whenRoutingToPersonDetails_thenHisRelativesMappedWithTypeArePassedAsAttribute() throws Exception {
         List<Person> relatives = Arrays.asList(mother, son, daughter, grandmother, grandfather);
-        Map<Person, String> relativesMapped = new HashMap<>();
-        relativesMapped.put(mother, "žmona"); relativesMapped.put(son, "sūnus");
-        relativesMapped.put(daughter, "dukra"); relativesMapped.put(grandmother, "motina");
-        relativesMapped.put(grandfather, "tėvas");
+        List<Person> relativesWithType = new ArrayList<>();
+        for (Person relative:relatives) {
+            relative.setRelativeType(serviceMock.getRelativeType(father, relative));
+            relativesWithType.add(relative);
+        }
         when(serviceMock.findById(1L)).thenReturn(father);
         when(serviceMock.getAllRelatives(father)).thenReturn(relatives);
-        when(serviceMock.getRelativesMappedWithType(father, relatives)).thenReturn(relativesMapped);
+        when(serviceMock.getRelativesWithType(father, relatives)).thenReturn(relativesWithType);
 
         mockMvc.perform(get("/person/{id}", 1L))
                 .andExpect(status().isOk())
                 .andExpect(view().name("detail"))
                 .andExpect(forwardedUrl("/detail.jsp"))
                 .andExpect(model().attribute("person", father))
-                .andExpect(model().attribute("relativesMapped", relativesMapped));
+                .andExpect(model().attribute("relativesWithType", relativesWithType));
 
         verify(serviceMock, times(1)).findById(1L);
         verify(serviceMock,times(1)).getAllRelatives(father);
@@ -163,9 +162,8 @@ public class PersonControllerTest {
                 LocalDate.of(1988, 4, 14));
 
         mockMvc.perform(post("/person").sessionAttr("person", son))
-                .andExpect(status().isOk())
-                .andExpect(view().name("index"))
-                .andExpect(forwardedUrl("/index.jsp"));
+                .andExpect(status().is(HttpStatus.FOUND.value()))
+                .andExpect(view().name("redirect:/"));
 
         verify(serviceMock, times(1)).savePerson(son);
         verifyNoMoreInteractions(serviceMock);

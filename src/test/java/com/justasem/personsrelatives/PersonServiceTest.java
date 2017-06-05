@@ -8,6 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import sun.dc.path.PathError;
 
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -524,6 +525,40 @@ public class PersonServiceTest {
         //then
         assertThat(relativeType).contains("anūkė");
     }
+
+    //Getting a list of relatives of one person
+
+    @Test
+    public void givenOnePerson_whenGettingHisRelatives_thenReturnListOfPersons()
+        throws Exception {
+        //given
+        Person person = father;
+        //when
+        List<Person> allRelatives = service.getAllRelatives(person);
+        //then
+        assertThat(allRelatives).contains(mother, son, daughter, grandfather, grandmother);
+    }
+
+    //Getting a list of relatives with type of one person
+
+    @Test
+    public void givenOnePersonAndHisRelatives_whenGettingRelativesWithType_thenSetRelativeTypePropertyAndReturnList()
+        throws Exception {
+        //given
+        Person person = father;
+        List<Person> relatives = service.getAllRelatives(father);
+        //when
+        List<Person> relativesWithType = service.getRelativesWithType(person, relatives);
+        //then
+        assertThat(relativesWithType).contains(mother, son, daughter, grandfather, grandmother);
+        assertThat(mother.getRelativeType()).contains("žmona");
+        assertThat(son.getRelativeType()).contains("sūnus");
+        assertThat(daughter.getRelativeType()).contains("dukra");
+        assertThat(grandfather.getRelativeType()).contains("tėvas");
+        assertThat(grandmother.getRelativeType()).contains("motina");
+
+    }
+
 
 
 

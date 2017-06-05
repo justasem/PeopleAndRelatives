@@ -13,12 +13,12 @@
 				<c:out value = "${person.firstName} ${person.lastName} ${person.birthDate}"/>
 		<a href="/person/edit/${person.id}">Redaguoti asmenį</a>
 
-                <c:forEach items="${relativesMapped}" var="relativeMapped" varStatus="status">
+                <c:forEach items="${relativesWithType}" var="relativesWithType" varStatus="status">
                     <ul>
-                        <li>${relativeMapped.value}</li>
-                        <li>${relativeMapped.key.firstName}</li>
-                        <li>${relativeMapped.key.lastName}</li>
-                        <li>${relativeMapped.key.birthDate}</li>
+                        <li>${relativesWithType.relativeType}</li>
+                        <li>${relativesWithType.firstName}</li>
+                        <li>${relativesWithType.lastName}</li>
+                        <li>${relativesWithType.birthDate}</li>
                     </ul>
                 </c:forEach>
         <a href="/">Asmenų sąrašas</a>

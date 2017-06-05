@@ -16,14 +16,17 @@
             <tr>
                <td><form:label path = "firstName">Vardas</form:label></td>
                <td><form:input path = "firstName" /></td>
+               <td><form:errors path = "firstName" /></td>
             </tr>
             <tr>
                <td><form:label path = "lastName">Pavardė</form:label></td>
                <td><form:input path = "lastName" /></td>
+               <td><form:errors path = "lastName" /></td>
             </tr>
             <tr>
                <td><form:label path = "birthDate">Gimimo data</form:label></td>
                <td><form:input path = "birthDate" /></td>
+               <td><form:errors path = "birthDate" /></td>
             </tr>
             <tr>
                <td colspan = "2">
