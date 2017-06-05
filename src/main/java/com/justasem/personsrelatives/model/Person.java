@@ -1,10 +1,12 @@
 package com.justasem.personsrelatives.model;
 
+import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
 
@@ -15,15 +17,17 @@ public class Person {
     @GeneratedValue(strategy= GenerationType.AUTO)
     private Long id;
 
-    @NotNull(message = "Įveskite asmens vardą")
-    @Size(message = "Netinkamas vardo formatas(Leidžiamas nuo 2 iki 50 simbolių ilgis)", min=2, max=50)
+    @NotEmpty
+    @Size(min=2, max=50)
+    @Pattern(regexp = "[a-zA-Z]+")
     private String firstName;
 
-    @NotNull(message = "Įveskite asmens pavardę")
-    @Size(message = "Netinkamas pavardės formatas(Leidžiamas nuo 2 iki 50 simbolių ilgis)", min=2, max=50)
+    @NotEmpty
+    @Size(min=2, max=50)
+    @Pattern(regexp = "[a-zA-Z]+")
     private String lastName;
 
-    @NotNull(message = "Įveskite asmens gimimo datą")
+    @NotNull
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate birthDate;
 

@@ -11,7 +11,7 @@
 </head>
 <body>
 				<c:out value = "${person.firstName} ${person.lastName} ${person.birthDate}"/>
-		<a href="/person/edit/${person.id}">Redaguoti asmenį</a>
+		<a href="/person/edit/${person.id}">Redaguoti asmens duomenis</a>
 
                 <c:forEach items="${relativesWithType}" var="relativesWithType" varStatus="status">
                     <ul>
