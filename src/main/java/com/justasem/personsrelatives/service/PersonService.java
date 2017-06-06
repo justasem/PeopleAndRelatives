@@ -2,17 +2,30 @@ package com.justasem.personsrelatives.service;
 
 import com.justasem.personsrelatives.model.Person;
 import com.justasem.personsrelatives.repositories.PersonRepository;
+import com.justasem.personsrelatives.web.Relative;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.*;
 
+import static com.justasem.personsrelatives.web.Relative.*;
+
 @Service
 public class PersonService {
 
     private static final int FIFTEEN = 15;
     private static final int FORTY = 40;
+    private static final String UNKNOWNTYPE = "nežinomas giminystės ryšys";
+    private static final String AITĖ = "aitė";
+    private static final String IENĖ = "ienė";
+    private static final String YTĖ = "ytė";
+    private static final String ŪTĖ = "ūtė";
+    private static final String UTĖ = "utė";
+    private static final String IS = "is";
+    private static final String AS = "as";
+    private static final String US = "us";
+    private static final String YS = "ys";
 
     private PersonRepository personRepository;
 
@@ -56,7 +69,7 @@ public class PersonService {
                 return getRelativeTypeIfHighAgeDifference(person, relative);
             }
         }
-        return "nežinomas giminystės ryšys";
+        return UNKNOWNTYPE;
     }
 
     public int getYearsBetweenBirthDates(LocalDate birthDate1, LocalDate birthDate2) {
@@ -84,9 +97,9 @@ public class PersonService {
 
         String lastNameRoot;
 
-        if (lastName.endsWith("aitė") || lastName.endsWith("ienė")){
+        if (lastName.endsWith(AITĖ) || lastName.endsWith(IENĖ)){
             lastNameRoot = lastName.substring(lastName.lastIndexOf("-") + 1, lastName.length() - 4);
-        } else if (lastName.endsWith("ytė") || lastName.endsWith("ūtė") || lastName.endsWith("utė")) {
+        } else if (lastName.endsWith(YTĖ) || lastName.endsWith(ŪTĖ) || lastName.endsWith(UTĖ)) {
             lastNameRoot = lastName.substring(lastName.lastIndexOf("-") + 1, lastName.length() - 3);
         } else {
             lastNameRoot = lastName.substring(lastName.lastIndexOf("-") + 1, lastName.length() - 2);
@@ -96,73 +109,73 @@ public class PersonService {
 
     public boolean isMan(String lastName) {
 
-        return lastName.endsWith("is") || lastName.endsWith("as") ||
-                lastName.endsWith("us") || lastName.endsWith("ys");
+        return lastName.endsWith(IS) || lastName.endsWith(AS) ||
+                lastName.endsWith(US) || lastName.endsWith(YS);
     }
 
     public boolean isWoman(String lastName) {
 
-       return lastName.endsWith("ytė") || lastName.endsWith("ūtė") ||
-               lastName.endsWith("aitė") || lastName.endsWith("utė") ||
-               lastName.endsWith("ienė");
+       return lastName.endsWith(YTĖ) || lastName.endsWith(ŪTĖ) ||
+               lastName.endsWith(AITĖ) || lastName.endsWith(UTĖ) ||
+               lastName.endsWith(IENĖ);
     }
 
     private String getRelativeTypeIfHighAgeDifference(Person person, Person relative) {
         if(relativeIsOlder(person, relative)){
             if(isMan(relative.getLastName())) {
-                return "senelis";
+                return GRANDFATHER.getRelativeType();
             }
             if(isWoman(relative.getLastName())){
-                return "senelė";
+                return GRANDMOTHER.getRelativeType();
             }
         }
         else {
             if(isMan(relative.getLastName())) {
-                return "anūkas";
+                return GRANDSON.getRelativeType();
             }
             if (isWoman(relative.getLastName())) {
-                return "anūkė";
+                return GRANDDAUGHTER.getRelativeType();
             }
         }
-        return "nežinomas giminystės ryšys";
+        return UNKNOWNTYPE;
     }
 
     private String getRelativeTypeIfMediumAgeDifference(Person person, Person relative) {
         if(relativeIsOlder(person, relative)){
             if(isMan(relative.getLastName())) {
-                return "tėvas";
+                return FATHER.getRelativeType();
             }
             if(isWoman(relative.getLastName())){
-                return "motina";
+                return MOTHER.getRelativeType();
             }
         }
         else {
             if(isMan(relative.getLastName())) {
-                return "sūnus";
+                return SON.getRelativeType();
             }
             if (isWoman(relative.getLastName())) {
-                return "dukra";
+                return DAUGHTER.getRelativeType();
             }
         }
-        return "nežinomas giminystės ryšys";
+        return UNKNOWNTYPE;
     }
 
     private String getRelativeTypeIfLowAgeDifference(Person person, Person relative) {
         if(isMan(relative.getLastName())) {
             if(isMarriedWoman(person)){
-                return "vyras";
+                return HUSBAND.getRelativeType();
             }else {
-                return "brolis";
+                return BROTHER.getRelativeType();
             }
         }
         if(isWoman(relative.getLastName())) {
             if (isMarriedWoman(relative)) {
-                return "žmona";
+                return WIFE.getRelativeType();
             } else {
-                return "sesuo";
+                return SISTER.getRelativeType();
             }
         }
-        return "nežinomas giminystės ryšys";
+        return UNKNOWNTYPE;
     }
 
     private boolean relativeIsOlder(Person person, Person relative) {
@@ -170,7 +183,7 @@ public class PersonService {
     }
 
     private boolean isMarriedWoman(Person person) {
-        return person.getLastName().endsWith("ienė");
+        return person.getLastName().endsWith(IENĖ);
     }
 
     public List<Person> getAllRelatives(Person person) {

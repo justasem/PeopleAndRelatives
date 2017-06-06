@@ -45,7 +45,7 @@ public class PersonController {
     }
 
     @RequestMapping("person/edit/{id}")
-    public String editPerson(@PathVariable("id") Long id, Model model) {
+    public String editPerson(@PathVariable("id") Long id, Model model) throws PersonNotFoundException {
         model.addAttribute("person", personService.findById(id));
         return "form";
     }

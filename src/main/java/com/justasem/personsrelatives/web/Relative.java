@@ -5,7 +5,7 @@ public enum Relative {
     WIFE("žmona"),
     SISTER("sesuo"),
     BROTHER("brolis"),
-    MOTHER("mama"),
+    MOTHER("motina"),
     FATHER("tėvas"),
     SON("sūnus"),
     DAUGHTER("dukra"),
