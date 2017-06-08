@@ -1,9 +1,10 @@
 package com.justasem.personsrelatives.repositories;
 
 import com.justasem.personsrelatives.model.Person;
-import org.springframework.data.repository.CrudRepository;
-import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
 
+public interface PersonRepository extends JpaRepository<Person, Long> {
 
-public interface PersonRepository extends PagingAndSortingRepository<Person, Long> {
 }

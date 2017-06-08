@@ -30,14 +30,11 @@
 	</div>
 
             <c:forEach items="${relativesWithType}" var="relativesWithType" varStatus="status">
-                <$i = 1; $i%4==0 ? <div class="row"> : "";
                 <div class="list-group col">
                     <p class="list-group-item active">${relativesWithType.relativeType}</p>
                     <a href="/person/${relativesWithType.id}" class="list-group-item">${relativesWithType.firstName} ${relativesWithType.lastName}</a>
                     <p href="#" class="list-group-item">${relativesWithType.birthDate}</p>
                 </div>
-                $i%4==0 ? </div> : "";
-                $i++;
             </c:forEach>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>

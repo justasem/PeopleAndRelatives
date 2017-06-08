@@ -44,7 +44,7 @@
                  <form:label path = "birthDate" class="control-label">Gimimo data:</form:label>
                  <div>
                     <div class="input-group input-append date" id="datepicker">
-                         <form:input path = "birthDate" class="form-control" type="text" name="date" value="1990-01-30"/>
+                         <form:input path = "birthDate" class="form-control" type="text" name="date" placeholder="1990-01-30"/>
                          <span class="input-group-addon add-on"><span class="glyphicon glyphicon-calendar"></span></span>
                     </div>
                  </div>

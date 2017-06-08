@@ -2,7 +2,9 @@ package com.justasem.personsrelatives.web.controller;
 
 import com.justasem.personsrelatives.model.Person;
 import com.justasem.personsrelatives.service.PersonNotFoundException;
+import com.justasem.personsrelatives.service.PersonSearchSortPageService;
 import com.justasem.personsrelatives.service.PersonService;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -19,11 +21,31 @@ public class PersonController {
 
     @Inject
     private PersonService personService;
+    @Inject
+    private PersonSearchSortPageService searchService;
 
     @RequestMapping("/")
     public String listPersons(Model model) {
         List<Person> persons = personService.getAllPersons();
         model.addAttribute("persons", persons);
+        return "index";
+    }
+
+    @RequestMapping("/{sortProperty}/pages/{pageNumber}")
+    public String sortPersons(@PathVariable String sortProperty, @PathVariable Integer pageNumber, Model model) {
+        Page<Person> page = searchService.getPersonPageSortedBy(pageNumber, sortProperty);
+        List<Person> persons = page.getContent();
+
+        int current = page.getNumber() + 1;
+        int begin = Math.max(1, current - 2);
+        int end = Math.min(begin + 2, page.getTotalPages());
+
+        model.addAttribute("persons", persons);
+        model.addAttribute("page", page);
+        model.addAttribute("beginIndex", begin);
+        model.addAttribute("endIndex", end);
+        model.addAttribute("currentIndex", current);
+
         return "index";
     }
 
@@ -59,4 +81,6 @@ public class PersonController {
         }
         return "redirect:/";
     }
+
+
 }
