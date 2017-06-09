@@ -42,13 +42,20 @@
         </table>
 
         <c:url var="firstUrl" value="/${sortProperty}/pages/1" />
-        <c:url var="lastUrl" value="/${sortProperty}/pages/${page.totalPages}" />
+        <c:choose>
+            <c:when test="${page.totalPages == 0}">
+               <c:url var="lastUrl" value="/${sortProperty}/pages/1" />
+            </c:when>
+            <c:otherwise>
+               <c:url var="lastUrl" value="/${sortProperty}/pages/${page.totalPages}" />
+            </c:otherwise>
+        </c:choose>
         <c:url var="prevUrl" value="/${sortProperty}/pages/${currentIndex - 1}" />
         <c:url var="nextUrl" value="/${sortProperty}/pages/${currentIndex + 1}" />
 
             <ul class="pagination">
                 <c:choose>
-                    <c:when test="${currentIndex == 1}">
+                    <c:when test="${currentIndex == 1 || currentIndex == null}">
                         <li class="disabled"><a href="#">&lt;&lt;</a></li>
                         <li class="disabled"><a href="#">&lt;</a></li>
                     </c:when>
@@ -60,6 +67,9 @@
                 <c:forEach var="i" begin="${beginIndex}" end="${endIndex}">
                     <c:url var="pageUrl" value="/${sortProperty}/pages/${i}" />
                     <c:choose>
+                        <c:when test="${currentIndex == null}">
+                            <li class="disabled"><a href="#"><c:out value="${i}" /></a></li>
+                        </c:when>
                         <c:when test="${i == currentIndex}">
                             <li class="active"><a href="${pageUrl}"><c:out value="${i}" /></a></li>
                         </c:when>

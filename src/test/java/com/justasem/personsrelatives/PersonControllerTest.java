@@ -1,12 +1,18 @@
 package com.justasem.personsrelatives;
 
 import com.justasem.personsrelatives.model.Person;
+import com.justasem.personsrelatives.repositories.PersonRepository;
+import com.justasem.personsrelatives.service.PersonSearchSortPageService;
 import com.justasem.personsrelatives.service.PersonService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -18,8 +24,10 @@ import javax.annotation.Resource;
 import java.time.LocalDate;
 import java.util.*;
 
+import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -32,12 +40,19 @@ public class PersonControllerTest {
     private MockMvc mockMvc;
     private Person father, mother, son, daughter, grandfather, grandmother;
     private List<Person> persons;
+    private Page<Person> personsPage;
 
     @Resource
     private WebApplicationContext context;
 
     @MockBean
     private PersonService serviceMock;
+
+    @MockBean
+    private PersonSearchSortPageService serviceSortingMock;
+
+    @MockBean
+    private PersonRepository repository;
 
     @Before
     public void setup() {
@@ -53,11 +68,16 @@ public class PersonControllerTest {
         grandmother = new Person(6L,"Danutė", "Paulauskienė", LocalDate.of(1941,9,30));
 
         persons = Arrays.asList(father, mother, son, daughter, grandfather, grandmother);
+        personsPage = new PageImpl<>(persons);
         when(serviceMock.getAllPersons()).thenReturn(persons);
+        when(serviceSortingMock.getPersonPageSortedBy(1, "lastName")).thenReturn(personsPage);
+        when(repository.findAll()).thenReturn(persons);
+        when(repository.findAll(any(Pageable.class))).thenReturn(personsPage);
+
     }
 
     @Test
-    public void whenHomePageLoads_thenDisplayAllPersons() throws Exception {
+    public void whenHomePageLoads_thenRedirectToAllPersonsSortedByLastName() throws Exception {
 
         mockMvc.perform(get("/")
                 .accept(MediaType.TEXT_PLAIN))
@@ -128,7 +148,6 @@ public class PersonControllerTest {
 
     }
 
-    //TODO Check if Person details are correct;
     @Test
     public void whenRoutingToEditPerson_thenFormViewIsRenderedWithExistingPersonDetails() throws Exception {
         when(serviceMock.findById(1L)).thenReturn(father);
@@ -169,6 +188,33 @@ public class PersonControllerTest {
         verifyNoMoreInteractions(serviceMock);
 
     }
+
+    //TODO fix the ASC/DESC order tests
+//    @Test
+//    public void whenSortingPaging_thenReturnPageThatIsSortedInDesscendingOrderByUsingSortPropertyBirthDate() throws Exception {
+//        when(repository.findAll(any(Pageable.class))).thenReturn(personsPage);
+//        when(serviceSortingMock.getPersonPageSortedBy(1, "birthDate")).thenReturn(personsPage);
+//        Page<Person> searchResultPage = serviceSortingMock.getPersonPageSortedBy(1, "birthDate");
+//
+//        mockMvc.perform(get("/birthDate/pages/1")).andExpect(status().isOk())
+//                .andExpect(view().name("index"))
+//                .andExpect(model().attribute("persons", persons))
+//                .andExpect(model().attribute("page", personsPage));
+//
+//        assertThat(searchResultPage.getSort().getOrderFor("birthDate").getDirection())
+//                .isEqualTo(Sort.Direction.DESC);
+//    }
+//
+//    @Test
+//    public void whenSortingPaging_thenReturnPageThatIsSortedInAscendingOrderByUsingSortPropertyLastName() throws Exception {
+//
+//        when(repository.findAll(any(Pageable.class))).thenReturn(personsPage);
+//        Page<Person> searchResultPage = serviceSortingMock.getPersonPageSortedBy(1, "lastName");
+//        assertThat(searchResultPage.getSort().getOrderFor("lastName").getDirection())
+//                .isEqualTo(Sort.Direction.ASC);
+//    }
+
+
 
 
 

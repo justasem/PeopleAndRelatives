@@ -25,7 +25,7 @@ public class PersonController {
     private PersonSearchSortPageService searchService;
 
     @RequestMapping("/")
-    public String listPersons(Model model) {
+    public String home(Model model) {
         List<Person> persons = personService.getAllPersons();
         model.addAttribute("persons", persons);
         return "index";

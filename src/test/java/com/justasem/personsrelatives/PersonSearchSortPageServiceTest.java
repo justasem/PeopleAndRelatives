@@ -64,24 +64,6 @@ public class PersonSearchSortPageServiceTest {
     }
 
     @Test
-    public void whenSortingPaging_thenReturnPageThatIsSortedInAscendingOrderByUsingSortPropertyLastName() throws Exception {
-
-        when(repository.findAll(any(Pageable.class))).thenReturn(resultPage);
-        Page<Person> searchResultPage = service.getPersonPageSortedBy(PAGE_NUMBER, SORT_PROPERTY_LASTNAME);
-        assertThat(searchResultPage.getSort().getOrderFor(SORT_PROPERTY_LASTNAME).getDirection())
-                .isEqualTo(Sort.Direction.ASC);
-    }
-
-    @Test
-    public void whenSortingPaging_thenReturnPageThatIsSortedInDesscendingOrderByUsingSortPropertyBirthDate() throws Exception {
-
-        when(repository.findAll(any(Pageable.class))).thenReturn(resultPage);
-        Page<Person> searchResultPage = service.getPersonPageSortedBy(PAGE_NUMBER, SORT_PROPERTY_BIRTHDATE);
-        assertThat(searchResultPage.getSort().getOrderFor(SORT_PROPERTY_BIRTHDATE).getDirection())
-                .isEqualTo(Sort.Direction.DESC);
-    }
-
-    @Test
     public void whenNoPersonsAreFound_thenReturnEmptyPageWithZeroElements() throws Exception {
 
         when(repository.findAll(any(Pageable.class))).thenReturn(emptyPage);

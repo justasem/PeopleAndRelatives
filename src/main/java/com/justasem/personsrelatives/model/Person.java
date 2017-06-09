@@ -19,12 +19,12 @@ public class Person {
 
     @NotEmpty
     @Size(min=2, max=50)
-    @Pattern(regexp = "([A-ZĄČĘĖĮŠŲŪŽ][a-ząčęėįšųūž]+)\\s([A-ZĄČĘĖĮŠŲŪŽ][a-ząčęėįšųūž]+)")
+    @Pattern(regexp = "([A-ZĄČĘĖĮŠŲŪŽ][a-ząčęėįšųūž]+)\\s?([A-ZĄČĘĖĮŠŲŪŽ][a-ząčęėįšųūž]+)?")
     private String firstName;
 
     @NotEmpty
     @Size(min=2, max=50)
-    @Pattern(regexp = "([A-ZĄČĘĖĮŠŲŪŽ][a-ząčęėįšųūž]+)\\-([A-ZĄČĘĖĮŠŲŪŽ][a-ząčęėįšųūž]+)")
+    @Pattern(regexp = "([A-ZĄČĘĖĮŠŲŪŽ][a-ząčęėįšųūž]+)\\-?([A-ZĄČĘĖĮŠŲŪŽ][a-ząčęėįšųūž]+)?")
     private String lastName;
 
     @NotNull

@@ -1,4 +1,4 @@
-package com.justasem.personsrelatives.web;
+package com.justasem.personsrelatives.service;
 
 public enum Relative {
     HUSBAND("vyras"),

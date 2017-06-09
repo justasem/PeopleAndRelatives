@@ -2,14 +2,13 @@ package com.justasem.personsrelatives.service;
 
 import com.justasem.personsrelatives.model.Person;
 import com.justasem.personsrelatives.repositories.PersonRepository;
-import com.justasem.personsrelatives.web.Relative;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.*;
 
-import static com.justasem.personsrelatives.web.Relative.*;
+import static com.justasem.personsrelatives.service.Relative.*;
 
 @Service
 public class PersonService {
